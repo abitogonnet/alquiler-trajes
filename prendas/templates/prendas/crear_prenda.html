@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Crear prenda</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    form { max-width: 520px; display: grid; gap: 10px; }
+    select, input { padding:10px; border:1px solid #ccc; border-radius:10px; }
+    button { padding:10px; border:1px solid #111; border-radius:10px; background:#111; color:#fff; cursor:pointer; }
+    button:hover { opacity: .9; }
+    .msg { padding:10px; border-radius:10px; margin-bottom: 12px; }
+    .ok { background:#e9f8ee; border:1px solid #9ad3a7; }
+    .err { background:#ffecec; border:1px solid #f3a0a0; }
+    a { color:#111; }
+  </style>
+</head>
+<body>
+  <h1>Crear prenda</h1>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="msg {% if m.tags == 'success' %}ok{% else %}err{% endif %}">
+        {{ m }}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+
+    <label>Prenda (tipo)</label>
+    <select name="tipo" required>
+      <option value="">Elegí una opción</option>
+      <option>Saco</option>
+      <option>Pantalón</option>
+      <option>Camisa</option>
+      <option>Chaleco</option>
+      <option>Moño</option>
+      <option>Corbata</option>
+      <option>Zapatos</option>
+    </select>
+
+    <label>Color</label>
+    <input name="color" required placeholder="Ej: Azul Francia" />
+
+    <label>Marca</label>
+    <input name="marca" required placeholder="Ej: Zara" />
+
+    <label>Talle</label>
+    <input name="talle" required placeholder="Ej: 46" />
+
+    <button type="submit">Crear prenda</button>
+  </form>
+
+  <p style="margin-top:16px;">
+    <a href="/prendas/stock/">➡ Ver stock</a> | <a href="/">⬅ Volver al menú</a>
+  </p>
+</body>
+</html>

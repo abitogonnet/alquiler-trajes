@@ -1,58 +1,46 @@
 from django.db import models
 
 class Prenda(models.Model):
-    TIPOS = [
-        ("Saco", "Saco"),
-        ("Pantalón", "Pantalón"),
-        ("Camisa", "Camisa"),
-        ("Chaleco", "Chaleco"),
-        ("Moño", "Moño"),
-        ("Corbata", "Corbata"),
-        ("Zapatos", "Zapatos"),
+    TIPO_CHOICES = [
+        ('Saco', 'Saco'),
+        ('Pantalón', 'Pantalón'),
+        ('Camisa', 'Camisa'),
+        ('Chaleco', 'Chaleco'),
+        ('Moño', 'Moño'),
+        ('Corbata', 'Corbata'),
+        ('Zapatos', 'Zapatos'),
     ]
 
-    ESTADOS = [
-        ("Disponible", "Disponible"),
-        ("Reservado", "Reservado"),
-        ("Entregado", "Entregado"),
+    ESTADO_CHOICES = [
+        ('Disponible', 'Disponible'),
+        ('Reservado', 'Reservado'),
+        ('Entregado', 'Entregado'),
     ]
 
-    tipo = models.CharField(max_length=20, choices=TIPOS)
-    color = models.CharField(max_length=40)
-    marca = models.CharField(max_length=40, blank=True, default="")
-    talle = models.CharField(max_length=20)
-
+    tipo = models.CharField(max_length=20, choices=TIPO_CHOICES)
+    color = models.CharField(max_length=50)
+    marca = models.CharField(max_length=50)
+    talle = models.CharField(max_length=10)
     codigo = models.CharField(max_length=10, unique=True, blank=True)
-    estado = models.CharField(max_length=12, choices=ESTADOS, default="Disponible")
-
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    def _prefix(self):
-        return {
-            "Saco": "SA",
-            "Pantalón": "PA",
-            "Camisa": "CA",
-            "Chaleco": "CH",
-            "Moño": "MO",
-            "Corbata": "CO",
-            "Zapatos": "ZA",
-        }[self.tipo]
+    estado = models.CharField(max_length=20, choices=ESTADO_CHOICES, default='Disponible')
 
     def save(self, *args, **kwargs):
         if not self.codigo:
-            prefix = self._prefix()
-            last = Prenda.objects.filter(codigo__startswith=f"{prefix}-").order_by("-codigo").first()
-            if last and "-" in last.codigo:
-                n = int(last.codigo.split("-")[1]) + 1
-            else:
-                n = 0
-            self.codigo = f"{prefix}-{n:03d}".upper()
+            iniciales = (self.tipo[:2] if self.tipo else "XX").upper()
+
+            # buscamos el último código bien formado para ese tipo
+            ultimo = Prenda.objects.filter(tipo=self.tipo, codigo__regex=r"^[A-Z]{2}-\d{3}$").order_by("-codigo").first()
+
+            numero = 1
+            if ultimo and ultimo.codigo:
+                try:
+                    numero = int(ultimo.codigo.split("-")[1]) + 1
+                except Exception:
+                    numero = 1
+
+            self.codigo = f"{iniciales}-{numero:03d}"
+
         super().save(*args, **kwargs)
 
-    @property
-    def descripcion(self):
-        marca_txt = f" {self.marca}" if self.marca else ""
-        return f"{self.tipo} {self.color}{marca_txt} talle {self.talle}".strip()
-
     def __str__(self):
-        return f"{self.codigo} - {self.descripcion} ({self.estado})"
+        return f"{self.tipo} {self.color} {self.marca} talle {self.talle} - {self.codigo}"
