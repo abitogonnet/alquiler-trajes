@@ -1,36 +1,98 @@
 from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.db.models import Q
 
-from .forms import PrendaForm
 from .models import Prenda
-from alquileres.models import Alquiler  # para disponibilidad
+
+# Para disponibilidad (si ya tenés alquileres)
+try:
+    from alquileres.models import Alquiler
+except Exception:
+    Alquiler = None
+
 
 def crear_prenda(request):
     if request.method == "POST":
-        form = PrendaForm(request.POST)
-        if form.is_valid():
-            prenda = form.save(commit=False)
-            prenda.estado = "Disponible"
-            prenda.save()
-            return render(request, "prendas/creada.html", {"prenda": prenda})
-    else:
-        form = PrendaForm()
-    return render(request, "prendas/crear.html", {"form": form})
+        tipo = request.POST.get("tipo")
+        color = request.POST.get("color")
+        marca = request.POST.get("marca")
+        talle = request.POST.get("talle")
 
-def listar_prendas(request):
-    prendas = Prenda.objects.order_by("tipo", "codigo")
-    return render(request, "prendas/listar.html", {"prendas": prendas})
+        if not (tipo and color and marca and talle):
+            messages.error(request, "Faltan datos obligatorios.")
+            return redirect("crear_prenda")
 
-def disponibilidad(request):
-    no_disponibles = []
-    f1 = request.GET.get("desde")
-    f2 = request.GET.get("hasta")
+        p = Prenda(tipo=tipo, color=color, marca=marca, talle=talle, estado="Disponible")
+        p.save()
+        messages.success(request, f"Prenda creada: {p.codigo}")
+        return redirect("crear_prenda")
 
-    if f1 and f2:
-        activos = Alquiler.objects.filter(estado__in=["Reservado", "Entregado"]).filter(
-            fecha_entrega__lte=f2,
-            fecha_devolucion__gte=f1,
+    return render(request, "prendas/crear_prenda.html")
+
+
+def ver_stock(request):
+    # Filtros
+    tipo = (request.GET.get("tipo") or "").strip()
+    estado = (request.GET.get("estado") or "").strip()
+    q = (request.GET.get("q") or "").strip()
+
+    prendas = Prenda.objects.all()
+
+    if tipo:
+        prendas = prendas.filter(tipo=tipo)
+
+    if estado:
+        prendas = prendas.filter(estado=estado)
+
+    if q:
+        prendas = prendas.filter(
+            Q(codigo__icontains=q)
+            | Q(color__icontains=q)
+            | Q(marca__icontains=q)
+            | Q(talle__icontains=q)
         )
-        no_disponibles = Prenda.objects.filter(alquileres__in=activos).distinct().order_by("tipo", "codigo")
 
-    return render(request, "prendas/disponibilidad.html", {"no_disponibles": no_disponibles})
+    prendas = prendas.order_by("tipo", "codigo")
+
+    ctx = {
+        "prendas": prendas,
+        "tipos": [x[0] for x in Prenda.TIPO_CHOICES],
+        "estados": [x[0] for x in Prenda.ESTADO_CHOICES],
+        "tipo_sel": tipo,
+        "estado_sel": estado,
+        "q": q,
+        "total": prendas.count(),
+    }
+    return render(request, "prendas/stock.html", ctx)
+
+
+def ver_disponibilidad(request):
+    """
+    Pantalla: eliges fecha_inicio y fecha_fin y muestra prendas NO disponibles en ese rango.
+    Requiere que exista el modelo Alquiler con M2M 'prendas' y campos fecha_entrega/fecha_devolucion/estado.
+    """
+    prendas_no_disp = []
+    fecha_inicio = (request.GET.get("fecha_inicio") or "").strip()
+    fecha_fin = (request.GET.get("fecha_fin") or "").strip()
+
+    if Alquiler is None:
+        messages.error(request, "No se encontró el módulo alquileres.models (ver disponibilidad no está listo).")
+        return render(request, "prendas/disponibilidad.html", {"prendas_no_disp": [], "fecha_inicio": fecha_inicio, "fecha_fin": fecha_fin})
+
+    if fecha_inicio and fecha_fin:
+        # Alquileres que se pisan con el rango y siguen activos
+        alquileres = Alquiler.objects.filter(
+            estado__in=["Reservado", "Entregado"]
+        ).filter(
+            Q(fecha_entrega__lte=fecha_fin) & Q(fecha_devolucion__gte=fecha_inicio)
+        ).distinct()
+
+        # Prendas ocupadas por esos alquileres
+        prendas_no_disp = Prenda.objects.filter(alquiler__in=alquileres).distinct().order_by("tipo", "codigo")
+
+    ctx = {
+        "prendas_no_disp": prendas_no_disp,
+        "fecha_inicio": fecha_inicio,
+        "fecha_fin": fecha_fin,
+    }
+    return render(request, "prendas/disponibilidad.html", ctx)
