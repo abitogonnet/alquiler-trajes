@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Crear alquiler</h1>
+
+{% if conflictos %}
+  <div class="msg">
+    <b>No se puede:</b> hay prendas ocupadas en ese rango de fechas.
+    <ul>
+      {% for a in conflictos %}
+        <li>Alquiler #{{ a.id }} ({{ a.estado }}) - Entrega {{ a.fecha_entrega }} / Devuelve {{ a.fecha_devolucion }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <br>
+{% endif %}
+
+<form method="post" class="msg">
+  {% csrf_token %}
+  <div class="row">
+    <div>{{ form.cliente_nombre.label_tag }}{{ form.cliente_nombre }}</div>
+    <div>{{ form.cliente_telefono.label_tag }}{{ form.cliente_telefono }}</div>
+
+    <div>{{ form.fecha_visita.label_tag }}{{ form.fecha_visita }}</div>
+    <div>{{ form.fecha_reserva.label_tag }}{{ form.fecha_reserva }}</div>
+    <div>{{ form.fecha_entrega.label_tag }}{{ form.fecha_entrega }}</div>
+    <div>{{ form.fecha_devolucion.label_tag }}{{ form.fecha_devolucion }}</div>
+
+    <div style="grid-column: 1 / -1;">
+      {{ form.prendas_codigos.label_tag }}{{ form.prendas_codigos }}
+      <div class="hint">{{ form.prendas_codigos.help_text }}</div>
+      {% for e in form.prendas_codigos.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    </div>
+
+    <div>{{ form.ruedo_saco.label_tag }}{{ form.ruedo_saco }}</div>
+    <div>{{ form.ruedo_pantalon.label_tag }}{{ form.ruedo_pantalon }}</div>
+
+    <div style="grid-column: 1 / -1;">{{ form.notas.label_tag }}{{ form.notas }}</div>
+
+    <div>{{ form.senia_monto.label_tag }}{{ form.senia_monto }}</div>
+    <div>{{ form.senia_metodo.label_tag }}{{ form.senia_metodo }}</div>
+
+    <div>{{ form.total.label_tag }}{{ form.total }}</div>
+
+    <div>{{ form.saldo_restante.label_tag }}{{ form.saldo_restante }}</div>
+    <div>{{ form.saldo_metodo.label_tag }}{{ form.saldo_metodo }}</div>
+  </div>
+
+  <br>
+  <button class="btn" type="submit">Crear alquiler</button>
+  <a class="btn2" href="/">Menú</a>
+</form>
+{% endblock %}

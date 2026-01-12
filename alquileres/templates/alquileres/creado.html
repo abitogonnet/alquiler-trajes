@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Alquiler creado ✅</h1>
+
+<div class="msg">
+  <p><b>Alquiler #{{ alquiler.id }}</b></p>
+
+  <p><b>Mensaje para WhatsApp (copiar y pegar):</b></p>
+  <textarea id="wa" rows="14">{{ wa_message }}</textarea>
+  <br><br>
+  <button class="btn" onclick="copyWA()">Copiar</button>
+  <a class="btn2" href="/alquileres/crear/">Crear otro</a>
+  <a class="btn2" href="/alquileres/listar/">Ver alquileres</a>
+  <a class="btn2" href="/">Menú</a>
+</div>
+
+<script>
+function copyWA(){
+  const el = document.getElementById("wa");
+  el.select();
+  el.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  alert("Copiado ✅");
+}
+</script>
+{% endblock %}

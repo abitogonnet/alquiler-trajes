@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Cargar gasto</h1>
+
+<form method="post" class="msg">
+  {% csrf_token %}
+  <div class="row">
+    <div>{{ form.monto.label_tag }}{{ form.monto }}</div>
+    <div>{{ form.descripcion.label_tag }}{{ form.descripcion }}</div>
+  </div>
+  <br>
+  <button class="btn" type="submit">Guardar</button>
+  <a class="btn2" href="/">Menú</a>
+</form>
+{% endblock %}

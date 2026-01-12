@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Disponibilidad</h1>
+
+<form method="get" class="msg">
+  <div class="row">
+    <div>
+      <label>Desde</label>
+      <input type="date" name="desde" value="{{ request.GET.desde }}">
+    </div>
+    <div>
+      <label>Hasta</label>
+      <input type="date" name="hasta" value="{{ request.GET.hasta }}">
+    </div>
+  </div>
+  <br>
+  <button class="btn" type="submit">Buscar</button>
+  <a class="btn2" href="/">Menú</a>
+</form>
+
+<br>
+
+<h3>Prendas NO disponibles en ese rango</h3>
+<table>
+  <thead><tr><th>Código</th><th>Descripción</th><th>Estado</th></tr></thead>
+  <tbody>
+    {% for p in no_disponibles %}
+      <tr><td>{{ p.codigo }}</td><td>{{ p.descripcion }}</td><td>{{ p.estado }}</td></tr>
+    {% empty %}
+      <tr><td colspan="3">No hay prendas ocupadas (o falta elegir fechas).</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

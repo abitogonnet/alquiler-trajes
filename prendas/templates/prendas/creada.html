@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Prenda creada ✅</h1>
+
+<div class="msg">
+  <p><b>Código:</b> {{ prenda.codigo }}</p>
+  <p><b>Descripción:</b> {{ prenda.descripcion }}</p>
+  <p><b>Estado:</b> {{ prenda.estado }}</p>
+  <a class="btn" href="/prendas/crear/">Crear otra</a>
+  <a class="btn2" href="/">Menú</a>
+</div>
+{% endblock %}

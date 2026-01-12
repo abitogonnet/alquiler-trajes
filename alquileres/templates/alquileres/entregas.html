@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Entregas</h1>
+
+<form method="get" class="msg">
+  <div class="row">
+    <div><label>Desde</label><input type="date" name="desde" value="{{ request.GET.desde }}"></div>
+    <div><label>Hasta</label><input type="date" name="hasta" value="{{ request.GET.hasta }}"></div>
+  </div>
+  <br>
+  <button class="btn" type="submit">Buscar</button>
+  <a class="btn2" href="/">Menú</a>
+</form>
+
+<br>
+
+<table>
+  <thead><tr><th>#</th><th>Cliente</th><th>Entrega</th><th>Devolución</th><th>Estado</th></tr></thead>
+  <tbody>
+    {% for a in alquileres %}
+      <tr><td>{{ a.id }}</td><td>{{ a.cliente_nombre }}</td><td>{{ a.fecha_entrega }}</td><td>{{ a.fecha_devolucion }}</td><td>{{ a.estado }}</td></tr>
+    {% empty %}
+      <tr><td colspan="5">Sin resultados (o faltan fechas).</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Stock</h1>
+
+<div class="msg">
+  <a class="btn" href="/prendas/crear/">Crear prenda</a>
+  <a class="btn2" href="/">Menú</a>
+</div>
+<br>
+
+<table>
+  <thead>
+    <tr>
+      <th>Código</th><th>Tipo</th><th>Color</th><th>Marca</th><th>Talle</th><th>Estado</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for p in prendas %}
+    <tr>
+      <td>{{ p.codigo }}</td>
+      <td>{{ p.tipo }}</td>
+      <td>{{ p.color }}</td>
+      <td>{{ p.marca }}</td>
+      <td>{{ p.talle }}</td>
+      <td>{{ p.estado }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

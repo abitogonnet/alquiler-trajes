@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Gastos</h1>
+
+<div class="msg">
+  <a class="btn" href="/gastos/crear/">Cargar gasto</a>
+  <a class="btn2" href="/">Menú</a>
+</div>
+<br>
+
+<table>
+  <thead><tr><th>Fecha</th><th>Monto</th><th>Descripción</th></tr></thead>
+  <tbody>
+    {% for g in gastos %}
+      <tr><td>{{ g.fecha }}</td><td>${{ g.monto }}</td><td>{{ g.descripcion }}</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

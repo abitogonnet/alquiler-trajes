@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Borrar alquiler</h1>
+
+<div class="msg">
+  <p>¿Seguro que querés borrar el alquiler <b>#{{ alquiler.id }}</b>?</p>
+
+  <form method="post">
+    {% csrf_token %}
+    <button class="btn" type="submit">Sí, borrar</button>
+    <a class="btn2" href="/alquileres/listar/">Cancelar</a>
+  </form>
+</div>
+{% endblock %}

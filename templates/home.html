@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ABITO — Menú</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 24px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+    a.card { display:block; padding:16px; border:1px solid #ddd; border-radius:12px; text-decoration:none; color:#111; }
+    a.card:hover { border-color:#999; }
+    h1 { margin: 0 0 12px; }
+    p { margin: 6px 0 0; color:#444; }
+  </style>
+</head>
+<body>
+  <h1>ABITO — Menú</h1>
+  <div class="grid">
+    <a class="card" href="/prendas/crear/">
+      <strong>1) Cargar prenda (Stock)</strong>
+      <p>Crear prenda + código automático + estado Disponible.</p>
+    </a>
+
+    <a class="card" href="/alquileres/crear/">
+      <strong>2) Crear alquiler / reserva</strong>
+      <p>Cliente + prendas + fechas + pagos + WhatsApp.</p>
+    </a>
+
+    <a class="card" href="/alquileres/">
+      <strong>3) Ver alquileres (Listado)</strong>
+      <p>Listado estilo Excel, editar estado, borrar con confirmación.</p>
+    </a>
+
+    <a class="card" href="/prendas/disponibilidad/">
+      <strong>4) Ver disponibilidad</strong>
+      <p>Rango de fechas → prendas NO disponibles.</p>
+    </a>
+
+    <a class="card" href="/alquileres/entregas/">
+      <strong>5) Ver entregas</strong>
+      <p>Rango de fechas → alquileres a entregar.</p>
+    </a>
+
+    <a class="card" href="/alquileres/devoluciones/">
+      <strong>6) Ver devoluciones</strong>
+      <p>Devuelven hoy + atrasadas.</p>
+    </a>
+
+    <a class="card" href="/gastos/">
+      <strong>7) Cargar gastos</strong>
+      <p>Registrar monto + descripción + fecha.</p>
+    </a>
+
+    <a class="card" href="/reportes/">
+      <strong>8) Reportes y gráficos</strong>
+      <p>Tortas/barras: color, talle, métodos de pago, por mes/semana.</p>
+    </a>
+  </div>
+</body>
+</html>

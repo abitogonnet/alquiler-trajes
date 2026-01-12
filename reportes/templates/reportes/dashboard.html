@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 style="margin-top:0;">Reportes</h1>
+<p class="hint">Gráficos del negocio (según alquileres cargados).</p>
+
+<div class="grid">
+  <div class="card"><h3>Prendas por color</h3><canvas id="chartColor"></canvas></div>
+  <div class="card"><h3>Prendas por talle</h3><canvas id="chartTalle"></canvas></div>
+  <div class="card"><h3>Señas por método</h3><canvas id="chartSenias"></canvas></div>
+  <div class="card"><h3>Saldo cobrado por método</h3><canvas id="chartSaldo"></canvas></div>
+  <div class="card"><h3>Cantidad por mes</h3><canvas id="chartCantMes"></canvas></div>
+  <div class="card"><h3>Cantidad por semana</h3><canvas id="chartCantSemana"></canvas></div>
+  <div class="card"><h3>Monto por mes</h3><canvas id="chartMontoMes"></canvas></div>
+  <div class="card"><h3>Monto por semana</h3><canvas id="chartMontoSemana"></canvas></div>
+</div>
+
+<br>
+<a class="btn2" href="/">Menú</a>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const porColor = JSON.parse('{{ por_color|escapejs }}');
+  const porTalle = JSON.parse('{{ por_talle|escapejs }}');
+  const seniasPorMetodo = JSON.parse('{{ senias_por_metodo|escapejs }}');
+  const saldoPorMetodo = JSON.parse('{{ saldo_por_metodo|escapejs }}');
+  const cantPorMes = JSON.parse('{{ cant_por_mes|escapejs }}');
+  const cantPorSemana = JSON.parse('{{ cant_por_semana|escapejs }}');
+  const montoPorMes = JSON.parse('{{ monto_por_mes|escapejs }}');
+  const montoPorSemana = JSON.parse('{{ monto_por_semana|escapejs }}');
+
+  function makeBar(canvasId, labels, data) {
+    const el = document.getElementById(canvasId);
+    if (!el) return;
+    new Chart(el, {
+      type: "bar",
+      data: { labels, datasets: [{ data }] },
+      options: { responsive:true, plugins:{ legend:{ display:false } }, scales:{ y:{ beginAtZero:true } } }
+    });
+  }
+
+  makeBar("chartColor", porColor.labels, porColor.data);
+  makeBar("chartTalle", porTalle.labels, porTalle.data);
+  makeBar("chartSenias", seniasPorMetodo.labels, seniasPorMetodo.data);
+  makeBar("chartSaldo", saldoPorMetodo.labels, saldoPorMetodo.data);
+  makeBar("chartCantMes", cantPorMes.labels, cantPorMes.data);
+  makeBar("chartCantSemana", cantPorSemana.labels, cantPorSemana.data);
+  makeBar("chartMontoMes", montoPorMes.labels, montoPorMes.data);
+  makeBar("chartMontoSemana", montoPorSemana.labels, montoPorSemana.data);
+</script>
+
+{% endblock %}

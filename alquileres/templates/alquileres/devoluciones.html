@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Devoluciones</h1>
+
+<form method="get" class="msg">
+  <div class="row">
+    <div><label>Desde</label><input type="date" name="desde" value="{{ request.GET.desde }}"></div>
+    <div><label>Hasta</label><input type="date" name="hasta" value="{{ request.GET.hasta }}"></div>
+  </div>
+  <br>
+  <button class="btn" type="submit">Buscar</button>
+  <a class="btn2" href="/">Menú</a>
+</form>
+
+<br>
+
+<h3>Devoluciones en el rango</h3>
+<table>
+  <thead><tr><th>#</th><th>Cliente</th><th>Devuelve</th><th>Estado</th></tr></thead>
+  <tbody>
+    {% for a in alquileres %}
+      <tr><td>{{ a.id }}</td><td>{{ a.cliente_nombre }}</td><td>{{ a.fecha_devolucion }}</td><td>{{ a.estado }}</td></tr>
+    {% empty %}
+      <tr><td colspan="4">Sin resultados (o faltan fechas).</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<br>
+<h3>Atrasados (ya deberían haber devuelto)</h3>
+<table>
+  <thead><tr><th>#</th><th>Cliente</th><th>Devuelve</th><th>Estado</th></tr></thead>
+  <tbody>
+    {% for a in atrasados %}
+      <tr><td>{{ a.id }}</td><td>{{ a.cliente_nombre }}</td><td>{{ a.fecha_devolucion }}</td><td>{{ a.estado }}</td></tr>
+    {% empty %}
+      <tr><td colspan="4">No hay atrasados ✅</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

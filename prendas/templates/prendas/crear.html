@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Crear prenda</h1>
+
+<form method="post" class="msg">
+  {% csrf_token %}
+  <div class="row">
+    <div>{{ form.tipo.label_tag }}{{ form.tipo }}</div>
+    <div>{{ form.color.label_tag }}{{ form.color }}</div>
+    <div>{{ form.marca.label_tag }}{{ form.marca }}</div>
+    <div>{{ form.talle.label_tag }}{{ form.talle }}</div>
+  </div>
+  <br>
+  <button class="btn" type="submit">Crear prenda</button>
+  <a class="btn2" href="/">Volver al menú</a>
+</form>
+{% endblock %}
